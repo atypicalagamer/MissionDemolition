@@ -24,4 +24,4 @@ Enhancements:
 
 With all these enhancements put together, I am much happier with this project compared to how I felt afater making Apple Picker, and I'll definitely be adding more enhancements for the next project! :]
 
-Michael Tomlin
+By Michael Tomlin
