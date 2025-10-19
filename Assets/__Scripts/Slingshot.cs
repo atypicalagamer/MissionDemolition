@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class Slingshot : MonoBehaviour
 {
+    [SerializeField] private LineRenderer rubber;
+    [SerializeField] private Transform firstPoint;
+    [SerializeField] private Transform secondPoint;
+    [SerializeField] private Transform centerPoint;
+    [SerializeField] private AudioSource projectileLaunch;
+
     // fields set in the Unity Inspector pane
     [Header("Inscribed")]
     public GameObject projectilePrefab;
@@ -23,6 +29,9 @@ public class Slingshot : MonoBehaviour
         launchPoint = launchPointTrans.gameObject;
         launchPoint.SetActive(false);
         launchPos = launchPointTrans.position;
+        rubber.SetPosition(0, firstPoint.position);
+        rubber.SetPosition(1, centerPoint.position);
+        rubber.SetPosition(2, secondPoint.position);
     }
     void OnMouseEnter()
     {
@@ -46,6 +55,7 @@ public class Slingshot : MonoBehaviour
         projectile.transform.position = launchPos;
         // Set it to isKinematic for now
         projectile.GetComponent<Rigidbody>().isKinematic = true;
+        rubber.SetPosition(1, launchPos);
     }
 
     void Update()
@@ -70,6 +80,7 @@ public class Slingshot : MonoBehaviour
         // Move the projectile to this new position
         Vector3 projPos = launchPos + mouseDelta;
         projectile.transform.position = projPos;
+        rubber.SetPosition(1, projPos);
 
         if (Input.GetMouseButtonUp(0)) // This 0 is a zero, not an o
         {
@@ -79,6 +90,12 @@ public class Slingshot : MonoBehaviour
             projRB.isKinematic = false;
             projRB.collisionDetectionMode = CollisionDetectionMode.Continuous;
             projRB.velocity = -mouseDelta * velocityMult;
+
+            // Retract rubber band while playing a sound
+            projectileLaunch.Play();
+            rubber.SetPosition(0, firstPoint.position);
+            rubber.SetPosition(1, centerPoint.position);
+            rubber.SetPosition(2, secondPoint.position);
 
             // Switch to slingshot view immediately before setting POI
             FollowCam.SWITCH_VIEW(FollowCam.eView.slingshot);
